@@ -47,19 +47,18 @@ const App = () => {
     },
   ];
 
-  const totalExercises = courses.reduce((acc, course) => {
-    return (
-      acc +
-      course.parts.reduce((courseAcc, part) => courseAcc + part.exercises, 0)
-    );
-  }, 0);
+  // const totalExercises = courses.reduce((acc, course) => {
+  //   return (
+  //     acc +
+  //     course.parts.reduce((courseAcc, part) => courseAcc + part.exercises, 0)
+  //   );
+  // }, 0);
 
   return (
     <div>
       {courses.map((course) => (
         <Course key={course.id} course={course} />
       ))}
-      <h3> {totalExercises}</h3>
     </div>
   );
 };
