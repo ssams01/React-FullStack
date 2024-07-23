@@ -1,11 +1,33 @@
 import { useState, useEffect } from 'react';
+import personService from './services/person'
 import axios from 'axios'
 
+const baseUrl = 'http://localhost:3001/persons'
 
-const PersonInfo = ({ person }) => {
+const Notification = ({ message, isError }) => {
+  if (message === null) {
+    return null
+  }
+
+  if(isError) {
+    return (
+      <div className='yoti'>
+        {message}
+      </div>
+    )
+  }
+  return (
+    <div className='noti'>
+      {message}
+    </div>
+  )
+}
+
+const PersonInfo = ({ person, handleDelete }) => {
   return (
     <p>
-    {person.name} {person.number}
+    {person.name} {person.number} 
+    <button onClick={() => handleDelete(person)}>delete</button>
     </p>
   )
 };
@@ -49,7 +71,7 @@ const Filter = ({currFilter, setCurrFilter}) => {
   )
 }
 
-const PersonForm = ({persons, setPersons}) => {
+const PersonForm = ({persons, setPersons, updatePerson, setAlertMessage}) => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('')
 
@@ -64,9 +86,15 @@ const PersonForm = ({persons, setPersons}) => {
     const foundPerson = persons.find((person) => person.name === newPerson.name);
 
     if (!foundPerson) { 
-      setPersons([...persons, newPerson]);
+      personService
+      .create(newPerson)
+      .then(returnedPerson => {
+        setPersons([...persons, returnedPerson])
+        setAlertMessage(`Added ${newPerson.name}`)
+      })
     } else {
-      alert(`${foundPerson.name} is already added to the phonebook`);
+      updatePerson(foundPerson.id, newPerson.number)
+      setAlertMessage(`Updated ${foundPerson.name}'s number`)
     }
 
     setNewName(''); 
@@ -102,35 +130,67 @@ const PersonForm = ({persons, setPersons}) => {
   )
 }
 
-
 function App() {
   const [persons, setPersons] = useState([]);
   const [currFilter, setCurrFilter] = useState('')
+  const [alertMessage, setAlertMessage] = useState('Welcome')
+  const [isError, setIsError] = useState(false)
 
   const hook = () => {
     console.log('effect')
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
+    personService
+    .getAll()
+    .then(initialPersons => {
         console.log('promise fulfilled')
-        setPersons(response.data)
-      })
+        setPersons(initialPersons)
+    })
   }
-  
   useEffect(hook, [])
+
+  const handleDelete = (personToDelete) => {
+    if (window.confirm(`Delete ${personToDelete.name} ?`)) {
+      try {
+        personService.delet(personToDelete.id);
+        setPersons(persons.filter((person) => person.id !== personToDelete.id));
+      } 
+      catch (error) {
+        console.error('Error deleting person:', error);
+        setIsError(true);
+        setAlertMessage(`Information of ${personToDelete.name} has already been removed from server`);
+      }
+    }
+  };
+
+  const updateNumber = (id, newNumber) => {
+    const personToUpdate = persons.find(p => p.id === id)
+    const changedPerson = {...personToUpdate, number : newNumber}
+
+    if(window.confirm(`${personToUpdate.name} is already added to phonebook,
+      replace the old number with a new one?`)) {
+        personService
+          .update(id, changedPerson)
+          .then(returnedPerson => {
+             setPersons(persons.map(person => person.id !== id ? person : returnedPerson))
+           })
+      }
+    
+  }
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={alertMessage} isError={isError}/>
       <Filter currFilter={currFilter} setCurrFilter={setCurrFilter}/>
       <h2>add a new</h2>
-      <PersonForm persons={persons} setPersons={setPersons}/>
+      <PersonForm persons={persons} setPersons={setPersons} updatePerson={updateNumber}
+      setAlertMessage={setAlertMessage}
+      />
       <h2>Numbers</h2>
       <FilteredList
         items={persons} 
         filterTerm={currFilter} 
         renderItem={(person, index) => ( 
-          <PersonInfo key={index} person={person} />
+          <PersonInfo key={index} person={person} handleDelete={handleDelete}/>
         )}
       />
     </div>
