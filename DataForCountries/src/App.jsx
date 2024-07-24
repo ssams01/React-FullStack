@@ -6,7 +6,7 @@ function App() {
   const [currFilter, setCurrFilter] = useState('')
 
   useEffect(() => {
-        axios.get('https://studies.cs.helsinki.fi/restcountries/api/all')
+        axios.get('http://localhost:3001/countries')
         .then(response => {
           setCountries(response.data);
         })
@@ -26,6 +26,7 @@ function App() {
 
   return (
     <div>
+      find countries 
       <input 
          type="text" 
          value={currFilter} 
