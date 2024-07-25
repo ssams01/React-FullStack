@@ -6,7 +6,7 @@ function App() {
   const [currFilter, setCurrFilter] = useState('')
 
   useEffect(() => {
-        axios.get('http://localhost:3001/countries')
+        axios.get('http://localhost:3001/persons')
         .then(response => {
           setCountries(response.data);
         })
