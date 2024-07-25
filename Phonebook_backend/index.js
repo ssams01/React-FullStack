@@ -1,5 +1,26 @@
 const express = require('express')
+var morgan = require('morgan')
+const cors = require('cors')
 const app = express()
+
+app.use(morgan('tiny'))
+app.use(cors())
+
+//uncomment and use the formatted morgan code if you ever connect this small app to a 
+//db where POST requests will actually work
+
+// morgan.token('json', (req, res) => {
+//     if (req.method === 'POST') {
+//       return ` { ${JSON.stringify(req.body)} }`;
+//     } else {
+//       return '';
+//     }
+//   });
+  
+//   // Use the custom format
+//   const format = ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] - :response-time ms :json';
+  
+//   app.use(morgan(format));
 
   let persons = [
     {
