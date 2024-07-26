@@ -5,6 +5,7 @@ const app = express()
 
 app.use(morgan('tiny'))
 app.use(cors())
+app.use(express.static('dist'))
 
 //uncomment and use the formatted morgan code if you ever connect this small app to a 
 //db where POST requests will actually work
