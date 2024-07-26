@@ -26,7 +26,7 @@ app.use(express.json())
 
 // const app = http.createServer((request, response) => {
 //     response.writeHead(200, { 'Content-Type' : 'application/json'})
-//     response.end(JSON.stringify(notes))
+//     response.end(JSON.stringify(notes))z
 // })
 
 app.get('/', (request,response) => {
