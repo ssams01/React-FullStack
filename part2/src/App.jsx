@@ -46,8 +46,6 @@ const App = () => {
         setNotes(initialNotes)
        })
  }, [])
-  
-  useEffect(hook, [])
 
   const addNote = (event) => {
     event.preventDefault()
