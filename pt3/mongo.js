@@ -11,13 +11,13 @@ const url = `mongodb+srv://stephensams:${password}@cluster0.huswtmz.mongodb.net/
 
 mongoose.set('strictQuery', false)
 
-mongoose.connect(url)
-
-
-//Defining the schema for our database
-const noteSchema = new mongoose.Schema({
+mongoose.connect(url).then(() => {
+    //Defining the schema for our database
+    const noteSchema = new mongoose.Schema({
     content: String,
     important: Boolean,
+})
+
 })
 
 //defining the singular name of our model with param[0]
