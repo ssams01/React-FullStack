@@ -1,13 +1,15 @@
 const mongoose = require('mongoose')
+require('dotenv').config();
 
-if(process.argv.length < 3) {
-    console.log('give a password as argument')
-    process.exit(1)
-}
+// if(process.argv.length < 3) {
+//     console.log('give a password as argument')
+//     process.exit(1)
+// }
 
 const password = process.argv[2]
 
-const url = `mongodb+srv://stephensams:${password}@cluster0.huswtmz.mongodb.net/phonebook?retryWrites=true&w=majority&appName=Cluster0`
+// const url = `mongodb+srv://stephensams:${password}@cluster0.huswtmz.mongodb.net/phonebook?retryWrites=true&w=majority&appName=Cluster0`
+const url = process.env.MONGO_URI
 
 mongoose.set('strictQuery', false)
 
@@ -37,7 +39,7 @@ function retrieveEntries() {
     }
   }
 
-if(process.argv.length === 3) {
+if(process.argv.length === 2) {
     retrieveEntries()
 }
 else {
