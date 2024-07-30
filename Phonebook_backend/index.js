@@ -1,11 +1,15 @@
 const express = require('express')
 var morgan = require('morgan')
-const cors = require('cors')
 const app = express()
+require('dotenv').config()
+
+const Person = require('./models/person')
 
 app.use(morgan('tiny'))
-app.use(cors())
 app.use(express.static('dist'))
+
+const cors = require('cors')
+app.use(cors())
 
 //uncomment and use the formatted morgan code if you ever connect this small app to a 
 //db where POST requests will actually work
@@ -62,19 +66,25 @@ app.get('/', (request,response) => {
 })
 
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    // response.json(persons)
+    Person.find({}).then(persons => {
+        response.json(persons)
+    })
 })
 
 app.get('/api/persons/:id', (request,response) => {
-    const id = request.params.id
-    const person = persons.find(person => person.id === id)
-    if (person) {
+    // const id = request.params.id
+    // const person = persons.find(person => person.id === id)
+    // if (person) {
+    //     response.json(person)
+    // }
+    // else {
+    //     console.log('x')
+    //     response.status(404).end()    
+    // }
+    Person.findById(request.params.id).then(person => {
         response.json(person)
-    }
-    else {
-        console.log('x')
-        response.status(404).end()
-    }
+    })
 })
 
 
@@ -101,15 +111,18 @@ app.post('/api/persons/', (request, response) => {
         })
     }
     
-    const person = {
+    const person = new Person({
         name: body.name,
         number: body.number,
-        id: generateId(),
-    }
+        // id: generateId(),
+    })
 
-    persons = persons.concat(person)
+    // persons = persons.concat(person)
 
-    response.json(person)
+    // response.json(person)
+    person.save().then(savedPerson => {
+        response.json(savedPerson)
+    })
 })
 
 
