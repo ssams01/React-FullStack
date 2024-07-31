@@ -21,7 +21,7 @@ const personSchema = new mongoose.Schema({
     name: String,
     number: String,
 })
-
+ 
 //defining the singular name of our model with param[0]
 const Person = mongoose.model('Person', personSchema)
 

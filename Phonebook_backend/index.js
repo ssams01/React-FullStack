@@ -68,6 +68,7 @@ app.get('/', (request,response) => {
 app.get('/api/persons', (request, response) => {
     // response.json(persons)
     Person.find({}).then(persons => {
+        // persons.forEach(person => response.json(person))
         response.json(persons)
         console.log(response.json(persons))
     })
