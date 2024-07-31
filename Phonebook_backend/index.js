@@ -127,12 +127,23 @@ app.post('/api/persons/', (request, response) => {
     })
 })
 
+//do app.put here ! look to frontend and gemini to help you !
+app.put('/api/persons/:id', async (request, response) => {
+    const id = request.params.id
+    const body = request.body
 
+    const updatedPerson = await Person.findByIdAndUpdate(id, body, { new: true });
+    response.json(updatedPerson)
+})
+
+//In theory, this works but test once you get put implemented also
 app.delete('/api/persons/:id', (request, response) => {
     const id = request.params.id
-    persons = persons.filter(person => person.id === id)
+    // persons = persons.filter(person => person.id === id)
 
-    response.status(204).end()
+    Person.deleteOne({_id:id})
+
+     response.status(204).end()
 })
 
 app.get('/info', (request, response) => {
