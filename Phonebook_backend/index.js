@@ -74,7 +74,7 @@ app.get('/api/persons', (request, response) => {
     })
 })
 
-app.get('/api/persons/:id', (request,response) => {
+app.get('/api/persons/:id', (request,response, next) => {
     // const id = request.params.id
     // const person = persons.find(person => person.id === id)
     // if (person) {
@@ -85,10 +85,15 @@ app.get('/api/persons/:id', (request,response) => {
     //     response.status(404).end()    
     // }
     Person.findById(request.params.id).then(person => {
-        response.json(person)
+        if (person) {
+            response.json(person)
+        }
+        else {
+            response.status(404).end()
+        }
     })
-})
-
+    .catch(error => next(error))
+    })
 
 const generateId = () => {
     const maxId = notes.length > 0
@@ -155,8 +160,13 @@ app.delete('/api/persons/:id', async (request, response) => {
 })
 
 app.get('/info', (request, response) => {
-    response.send(`<p>Phonebook has info for ${persons.length} people</p>
-        <p>${formattedDate}</p>`)
+    Person.countDocuments({})
+    .then(count => {
+        response.send(`<p>Phonebook has info for ${count} people</p>
+            <p>${formattedDate}</p>`)
+    })
+
+    //implement a catch block here if errors occur...
 })
 
 const PORT = process.env.PORT || 3001 
