@@ -137,20 +137,20 @@ app.put('/api/persons/:id', async (request, response) => {
 })
 
 //In theory, this works but test once you get put implemented also
-app.delete('/api/persons/', async (request, response) => {
-    const { name, number } = request.body;
+app.delete('/api/persons/:id', async (request, response) => {
+    const id = request.params.id;
 
     try {
-      const result = await Person.deleteOne({ name, number });
-  
-      if (result.deletedCount === 0) {
-        return response.status(404).json({ error: 'Person not found' });
-      }
-  
-      response.status(204).end();
+        const result = await Person.deleteOne({ _id: id });
+
+        if (result.deletedCount === 0) {
+            return response.status(404).json({ error: 'Person not found' });
+        }
+
+        response.status(204).end();
     } catch (error) {
-      console.error('Error deleting person:', error);
-      response.status(500).json({ error: 'Internal Server Error' });
+        console.error('Error deleting person:', error);
+        response.status(500).json({ error: 'Internal Server Error' });
     }
 })
 
