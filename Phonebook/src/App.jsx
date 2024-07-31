@@ -33,6 +33,7 @@ const PersonInfo = ({ person, handleDelete }) => {
 };
 
 const FilteredList = ({ items, filterTerm, renderItem }) => {
+  console.log(typeof items)
   const filteredItems = items.filter((item) => {
     const nameRegex = new RegExp(filterTerm, 'i'); 
     return nameRegex.test(item.name); 
@@ -137,13 +138,21 @@ function App() {
   const [isError, setIsError] = useState(false)
 
   const hook = () => {
-    console.log('effect')
-    personService
-    .getAll()
-    .then(initialPersons => {
-        console.log('promise fulfilled')
-        setPersons(initialPersons)
-    })
+    try {
+      console.log('effect')
+      personService
+      .getAll()
+      .then(initialPersons => {
+          console.log('promise fulfilled')
+          console.log(initialPersons)
+          setPersons(initialPersons.length > 0 ? initialPersons : []);
+      })
+    }
+    catch (error) {
+      console.error('Error fetching persons:', error);
+      setIsError(true);
+      setAlertMessage('An error occurred while fetching persons.');
+    }   
   }
   useEffect(hook, [])
 
@@ -175,6 +184,8 @@ function App() {
       }
     
   }
+
+
 
   return (
     <div>

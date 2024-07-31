@@ -70,18 +70,21 @@ const App = () => {
     const changedNote = {...note, important: !note.important}
     
     noteService
-      .update(id, changedNote)
+      .update(id, changedNote) 
       .then(returnedNote => {
         setNotes(notes.map(note => note.id !== id ? note : returnedNote))
       })
       .catch(error => {
-        setErrorMessage(
-          `Note '${note.content}' was already removed from server`
-        )
-        sertTimeout(() => {
-          setErrorMessage(null)
-        }, 5000)
-        setNotes(notes.filter(n => n.id !== id))
+        // Only set error message if update truly failed
+        if (error.response && error.response.status === 404) {
+          setErrorMessage(
+            `Note '${note.content}' was already removed from server`
+          )
+          setNotes(notes.filter(n => n.id !== id)) // Still remove from local state on error
+        } else {
+          // Handle other potential errors here (e.g., network issues)
+          console.error('Error updating note:', error)
+        }
       })
   }
 

@@ -69,6 +69,7 @@ app.get('/api/persons', (request, response) => {
     // response.json(persons)
     Person.find({}).then(persons => {
         response.json(persons)
+        console.log(response.json(persons))
     })
 })
 
@@ -96,7 +97,7 @@ const generateId = () => {
     return String(maxId + 1)
 
 }
-
+ 
 app.post('/api/persons/', (request, response) => {
     const body = request.body
 
