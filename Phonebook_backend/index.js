@@ -137,13 +137,14 @@ app.put('/api/persons/:id', async (request, response) => {
 })
 
 //In theory, this works but test once you get put implemented also
-app.delete('/api/persons/:id', (request, response) => {
-    const id = request.params.id
-    // persons = persons.filter(person => person.id === id)
-
-    Person.deleteOne({_id:id})
-
-     response.status(204).end()
+app.delete('/api/persons/:id', async (request, response) => {
+    try {
+        await Person.deleteOne({ _id: id });
+        response.status(204).end();
+      } catch (error) {
+        console.error('Error deleting person:', error);
+        response.status(500).json({ error: 'Internal Server Error' });
+      }
 })
 
 app.get('/info', (request, response) => {
