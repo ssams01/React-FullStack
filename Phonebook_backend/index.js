@@ -7,9 +7,12 @@ const Person = require('./models/person')
 
 app.use(morgan('tiny'))
 app.use(express.static('dist'))
+app.use(express.json())
 
 const cors = require('cors')
 app.use(cors())
+
+//maybe implement error handling middleware here later.....(seems unecessary now)
 
 //uncomment and use the formatted morgan code if you ever connect this small app to a 
 //db where POST requests will actually work
@@ -50,7 +53,7 @@ app.use(cors())
     }
 ]
 
-app.use(express.json())
+
 
 function formatDate(date) {
     const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'short'   

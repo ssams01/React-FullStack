@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react';
 import personService from './services/person'
 import axios from 'axios'
@@ -92,6 +93,10 @@ const PersonForm = ({persons, setPersons, updatePerson, setAlertMessage}) => {
       .then(returnedPerson => {
         setPersons([...persons, returnedPerson])
         setAlertMessage(`Added ${newPerson.name}`)
+      })
+      .catch(error => {
+        console.log(error.response.data.error)
+        setAlertMessage(`Person validation failed: ${error.response.data.error}`)
       })
     } else {
       updatePerson(foundPerson.id, newPerson.number)
