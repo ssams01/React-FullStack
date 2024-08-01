@@ -73,7 +73,7 @@ const Filter = ({currFilter, setCurrFilter}) => {
   )
 }
 
-const PersonForm = ({persons, setPersons, updatePerson, setAlertMessage}) => {
+const PersonForm = ({persons, setPersons, updatePerson, setAlertMessage, setIsError}) => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('')
 
@@ -96,6 +96,7 @@ const PersonForm = ({persons, setPersons, updatePerson, setAlertMessage}) => {
       })
       .catch(error => {
         console.log(error.response.data.error)
+        setIsError(true)
         setAlertMessage(`Person validation failed: ${error.response.data.error}`)
       })
     } else {
@@ -199,7 +200,7 @@ function App() {
       <Filter currFilter={currFilter} setCurrFilter={setCurrFilter}/>
       <h2>add a new</h2>
       <PersonForm persons={persons} setPersons={setPersons} updatePerson={updateNumber}
-      setAlertMessage={setAlertMessage}
+      setAlertMessage={setAlertMessage} isError={setIsError}
       />
       <h2>Numbers</h2>
       <FilteredList
