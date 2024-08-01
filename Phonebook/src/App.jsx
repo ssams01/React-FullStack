@@ -95,7 +95,10 @@ const PersonForm = ({persons, setPersons, updatePerson, setAlertMessage, setIsEr
         setAlertMessage(`Added ${newPerson.name}`)
       })
       .catch(error => {
-        console.log(error.response.data.error)
+        //do more of these console.logs to help fully circumnavigate to the specific issue later
+        //this is just a cosmetic issue for now
+      
+        console.log(error)
         setIsError(true)
         setAlertMessage(`Person validation failed: ${error.response.data.error}`)
       })

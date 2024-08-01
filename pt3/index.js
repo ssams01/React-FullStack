@@ -52,10 +52,10 @@ app.post('/api/notes', (request, response,next) => {
   })
 
   note.save()
-  .then(savedNote => {
-    response.json(savedNote)
-  })
-  .catch(error => next(error))
+    .then(savedNote => {
+      response.json(savedNote)
+    })
+    .catch(error => next(error))
 })
 
 app.get('/api/notes/:id', (request, response) => {
@@ -68,10 +68,10 @@ app.put('/api/notes/:id', (request, response, next) => {
   const { content, important } = request.body
 
   Note.findByIdAndUpdate(
-    request.params.id, 
+    request.params.id,
     { content, important },
     { new: true, runValidators: true, context: 'query' }
-  ) 
+  )
     .then(updatedNote => {
       response.json(updatedNote)
     })

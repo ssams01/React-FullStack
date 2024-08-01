@@ -26,31 +26,31 @@ app.use(cors())
 //   });
   
 //   // Use the custom format
-//   const format = ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] - :response-time ms :json';
+//   const format = ':remote-addr - :remote-user [:date[clf]] ':method :url HTTP/:http-version' :status :res[content-length] - :response-time ms :json';
   
 //   app.use(morgan(format));
 
-  let persons = [
-    {
-        "id": "1",
-        "name": "Arto Hellas",
-        "number": "040-123456"
-    },
-    {
-        "id": "2", 
-        "name": "Ada Lovelance",
-        "number": "39-44-5323523"
-    },
-    {
-        "id": "3",
-        "name": "Dan Abramov",
-        "number": "12-43-234345"
-    },
-    {
-        "id": "4",
-        "name": "Mary Poppendieck",
-        "number": "39-23-6423122"
-    }
+let persons = [
+  {
+    'id': '1',
+    'name': 'Arto Hellas',
+    'number': '040-123456'
+},
+{
+    'id': '2', 
+    'name': 'Ada Lovelance',
+    'number': '39-44-5323523'
+},
+{
+    'id': '3',
+    'name': 'Dan Abramov',
+    'number': '12-43-234345'
+},
+{
+    'id': '4',
+    'name': 'Mary Poppendieck',
+    'number': '39-23-6423122'
+}
 ]
 
 
