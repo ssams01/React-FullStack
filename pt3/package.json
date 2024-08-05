@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
+    "start": "cross-env NODE_ENV=production node index.js",
+    "dev": "cross-env NODE_ENV=development nodemon index.js",
     "build:ui": "rm -rf dist && cd ../part2 && npm run build && copy -r dist",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push",
     "lint": "eslint .",
-    "test": "node --test"
+    "test": "cross-env NODE_ENV=test node --test"
   },
   "author": "Stephen Sams",
   "license": "ISC",
@@ -23,6 +23,7 @@
   "devDependencies": {
     "@eslint/js": "^9.8.0",
     "@stylistic/eslint-plugin-js": "^2.6.1",
+    "cross-env": "^7.0.3",
     "eslint": "^9.8.0",
     "globals": "^15.9.0",
     "nodemon": "^3.1.4",
