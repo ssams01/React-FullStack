@@ -53,7 +53,36 @@ test('no likes field makes zero likes', async () => {
         // Handle the case where likes is still undefined
         console.error('likes is undefined in response body');
       }
-    
+})
+
+test('no title field recieves a 400', async () => {
+    const newBlog = {
+        author: "D'est Notitel",
+        url: "www.fakeblogs.com/blogs/83492129",
+        likes: 89398
+    }
+
+    const response = await api
+     .post('/api/blogs')
+     .send(newBlog)
+     .expect(201)
+     .expect("Content-Type", /application\/json/)
+
+})
+
+test('no title field recieves a 400', async () => {
+    const newBlog = {
+        title: "Reblog without a cause",
+        author: "Noel Paast",
+        likes: 89398
+    }
+
+    const response = await api
+     .post('/api/blogs')
+     .send(newBlog)
+     .expect(201)
+     .expect("Content-Type", /application\/json/)
+
 })
 
 after(async () => {
