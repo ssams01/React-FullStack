@@ -20,15 +20,15 @@ mongoose.connect(url).then(() => {
   const Note = mongoose.model('Note', noteSchema)
   
   const note = new Note({
-    content: 'HTML is x',
+    content: 'Golf is hard but fun',
     important: true,
   })
   
  
-//   note.save().then(result => {
-//     console.log('note saved!')
-//     mongoose.connection.close()
-//   })
+  note.save().then(result => {
+    console.log('note saved!')
+    mongoose.connection.close()
+  })
  
   Note.find({}).then(result => {
     result.forEach(note => {
