@@ -7,6 +7,11 @@ const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
 
+beforeEach(async () => {
+    await Blog.deleteMany({})
+    await Blog.insertMany(helper.initialBlogs)
+})
+
 test('correct amount of blog posts', async () => {
     const response = await api.get('/api/blogs')
 
@@ -55,7 +60,7 @@ test('no likes field makes zero likes', async () => {
       }
 })
 
-test.only('no title field recieves a 400', async () => {
+test('no title field recieves a 400', async () => {
     const newBlog = {
         author: "D'est Notitel",
         url: "www.fakeblogs.com/blogs/83492129",
@@ -75,7 +80,7 @@ test.only('no title field recieves a 400', async () => {
 
 })
 
-test.only('no url field recieves a 400', async () => {
+test('no url field recieves a 400', async () => {
     const newBlog = {
         title: "Reblog without a cause",
         author: "Noel Paast",
@@ -99,7 +104,7 @@ test('succeeds with status code 204 if id is valid', async () => {
     const blogToDelete = blogsAtStart[0]
 
     await api
-      .delete(`/api/notes/${blogToDelete.id}`)
+      .delete(`/api/blogs/${blogToDelete.id}`)
       .expect(204)
 
       const blogsAtEnd = await helper.blogsInDb()
@@ -108,6 +113,22 @@ test('succeeds with status code 204 if id is valid', async () => {
 
       const contents = blogsAtEnd.map(b => b.title)
       assert(!contents.includes(blogToDelete.title))
+
+})
+
+test.only('a blogs title can be successfully updated', async () => {
+    const blogsAtStart = await helper.notesInDb()
+    const blogToUpdate = blogsAtStart[0]
+
+    const updatedBlog = {
+        title: 'a sophisticated title',
+        author: 'a author',
+        url: 'someperson.com',
+        likes: 7777
+      };
+
+      await api
+       .put(`/api/blogs/`)
 
 })
 
