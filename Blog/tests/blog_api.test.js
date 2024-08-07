@@ -6,6 +6,7 @@ const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
+const { ObjectId } = require('mongodb');
 
 beforeEach(async () => {
     await Blog.deleteMany({})
@@ -102,6 +103,7 @@ test('no url field recieves a 400', async () => {
 test('succeeds with status code 204 if id is valid', async () => {
     const blogsAtStart = await helper.notesInDb()
     const blogToDelete = blogsAtStart[0]
+    
 
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
@@ -117,19 +119,33 @@ test('succeeds with status code 204 if id is valid', async () => {
 })
 
 test.only('a blogs title can be successfully updated', async () => {
-    const blogsAtStart = await helper.notesInDb()
+    const blogsAtStart = await helper.blogsInDb()
     const blogToUpdate = blogsAtStart[0]
 
+    console.log('blogToUpdate._id:', blogToUpdate._id);
+
     const updatedBlog = {
-        title: 'a sophisticated title',
-        author: 'a author',
-        url: 'someperson.com',
-        likes: 7777
-      };
-
-      await api
-       .put(`/api/blogs/`)
-
+      title: 'a sophisticated title',
+      author: 'a author',
+      url: 'someperson.com',
+      likes: 7777
+    };
+  
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`) // Use existing ID from blogToUpdate
+      .send(updatedBlog) // Don't include ID in updatedBlog object
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+      .expect(response => {
+        assert.strictEqual(response.body.title, updatedBlog.title);
+        assert.strictEqual(response.body.author, updatedBlog.author);
+        assert.strictEqual(response.body.url, updatedBlog.url);
+        assert.strictEqual(response.body.likes, updatedBlog.likes);
+      });
+    
+    const blogsAtEnd = await helper.blogsInDb()
+  
+    assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length);
 })
 
 after(async () => {

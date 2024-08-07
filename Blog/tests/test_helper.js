@@ -2,13 +2,10 @@ const Blog = require("../models/blog")
 
 const initialBlogs = [
     {
-        _id: '66ad050432b024eale14d78',
         title: "A titel",
         author: "a author",
         url: "someperson.com",
         likes: 7777,
-        __v: 0
-
     },
     // {
     //   title: "Something Interesting",
