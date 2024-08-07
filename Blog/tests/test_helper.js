@@ -9,7 +9,14 @@ const initialBlogs = [
         likes: 7777,
         __v: 0
 
-    }
+    },
+    // {
+    //   title: "Something Interesting",
+    //   author: "Thea B'est",
+    //   url: "www.fakeblogs.com/blogs/23432423432",
+    //   likes: 537
+    // }
+    
 ]
 
 const nonExistingId = async () => {

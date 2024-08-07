@@ -55,7 +55,7 @@ test('no likes field makes zero likes', async () => {
       }
 })
 
-test('no title field recieves a 400', async () => {
+test.only('no title field recieves a 400', async () => {
     const newBlog = {
         author: "D'est Notitel",
         url: "www.fakeblogs.com/blogs/83492129",
@@ -65,12 +65,17 @@ test('no title field recieves a 400', async () => {
     const response = await api
      .post('/api/blogs')
      .send(newBlog)
-     .expect(201)
-     .expect("Content-Type", /application\/json/)
+     .expect(400)
+    //  .expect("Content-Type", /application\/json/)
+     .expect({ message: 'Bad request: Missing required fields "title" and/or "url".' })
+
+     const blogsAtEnd = await helper.blogsInDb()
+
+     assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
 
 })
 
-test('no title field recieves a 400', async () => {
+test.only('no url field recieves a 400', async () => {
     const newBlog = {
         title: "Reblog without a cause",
         author: "Noel Paast",
@@ -80,8 +85,29 @@ test('no title field recieves a 400', async () => {
     const response = await api
      .post('/api/blogs')
      .send(newBlog)
-     .expect(201)
-     .expect("Content-Type", /application\/json/)
+     .expect(400)
+    //  .expect("Content-Type", /application\/json/)
+     .expect({ message: 'Bad request: Missing required fields "title" and/or "url".' })
+
+     const blogsAtEnd = await helper.blogsInDb()
+
+     assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+})
+
+test('succeeds with status code 204 if id is valid', async () => {
+    const blogsAtStart = await helper.notesInDb()
+    const blogToDelete = blogsAtStart[0]
+
+    await api
+      .delete(`/api/notes/${blogToDelete.id}`)
+      .expect(204)
+
+      const blogsAtEnd = await helper.blogsInDb()
+
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
+
+      const contents = blogsAtEnd.map(b => b.title)
+      assert(!contents.includes(blogToDelete.title))
 
 })
 
