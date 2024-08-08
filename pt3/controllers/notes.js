@@ -3,11 +3,13 @@ const Note = require('../models/note')
 const User = require('../models/user')
 
 notesRouter.get('/', async (request, response) => {
-  const notes = await Note.find({})
+  const notes = await Note
+  .find({}).populate('user', { username: 1, name: 1})
     response.json(notes)
  
 })
 
+//double check repo code if this now isn't working (08/08/2024)
 notesRouter.get('/:id', async (request, response, next) => {
     const note = await Note.findById(request.params.id)
     if (note) {
@@ -22,11 +24,12 @@ notesRouter.post('/', async (request, response) => {
   const body = request.body
 
   const user = await User.findById(body.userId)
+  console.log(user)
 
   const note = new Note({
     content: body.content,
     important: body.important || false,
-    user: user.id
+    user: user._id
   })
 
   const savedNote = await note.save()
