@@ -10,33 +10,29 @@ blogsRouter.get('/', async (request, response) => {
 })
   
 blogsRouter.post('/', async (request, response) => {
-    const { likes, title, url, ...otherData } = request.body;
-    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+  const { likes, title, url, ...otherData } = request.body;
 
-    if(!decodedToken.id) {
-      return response.status(401).json({ error: 'token invalid'})
-    }
+  // Assuming the userExtractor middleware is already used
 
-    const user = await User.findById(decodedToken.id)
-    console.log(user)
+  if (!request.user) { // Check if user is present on the request object
+    return response.status(401).json({ error: 'Unauthorized' });
+  }
 
-    if (likes === undefined) {
-      request.body.likes = 0;
-    }
-    if(title === undefined || url === undefined) {
-      return response.status(400).json({ message: 'Bad request: Missing required fields "title" and/or "url".' });
-    }
-    else {
+  const user = request.user; // Access the user from middleware
 
-      //if this causes an error while testing, you may need to
-      //find a way to replace "otherData" because of how blogs now have
-      //a reference to the user in them ??
-      const blog = new Blog({ ...otherData, likes, user: user._id });
+  if (likes === undefined) {
+    request.body.likes = 0;
+  }
+  if (title === undefined || url === undefined) {
+    return response.status(400).json({ message: 'Bad request: Missing required fields "title" and/or "url".' });
+  } else {
+    const blog = new Blog({ ...otherData, likes, user: user._id }); // Use user._id from request.user
 
-      const savedBlog = await blog.save();
-      user.blogs = user.blogs.concat(savedBlog._id)
-      response.status(201).json(savedBlog);
-    }
+    const savedBlog = await blog.save();
+    user.blogs = user.blogs.concat(savedBlog._id); // Update user's blogs array (implementation depends on your model)
+    await user.save(); // Save the updated user with the new blog ID (optional, depending on your model)
+    response.status(201).json(savedBlog);
+  }
 })
 
 
@@ -60,8 +56,27 @@ blogsRouter.put('/:id', (request, response, next) => {
 })
 
 blogsRouter.delete('/:id', async (request, response) => {
-    await Blog.findByIdAndDelete(request.params.id)
-    response.status(204).end()
+  const user = request.user; 
+
+  if (!user) {
+    return response.status(401).json({ error: 'Unauthorized' });
+  }
+
+  const blog = await Blog.findById(request.params.id).populate('user');
+
+  if (!blog) {
+    return response.status(404).json({ error: 'Blog not found'   
+ });
+  }
+
+  if (blog.user._id.toString() !== user._id.toString()) {
+    return response.status(401).json({   
+    error: 'Only the blog creator can delete it!' });
+  }
+
+  await Blog.findByIdAndDelete(request.params.id);
+  response.status(204).end();  
+    
 })
 
   module.exports = blogsRouter
