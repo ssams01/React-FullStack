@@ -10,6 +10,9 @@ const api = supertest(app)
 const Blog = require('../models/blog')
 const { ObjectId } = require('mongodb');
 
+//4.23 FIX TESTS: do this when you have time; because I believe
+//some of what we are doing in part 5 might fix some of these issues
+
 beforeEach(async () => {
     await Blog.deleteMany({})
     await Blog.insertMany(helper.initialBlogs)
