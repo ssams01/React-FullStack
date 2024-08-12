@@ -9,7 +9,7 @@ blogsRouter.get('/', async (request, response) => {
      response.json(blogs)
 })
   
-blogsRouter.post('/', async (request, response) => {
+blogsRouter.post('/', userExtractor, async (request, response) => {
   const { likes, title, url, ...otherData } = request.body;
 
   // Assuming the userExtractor middleware is already used

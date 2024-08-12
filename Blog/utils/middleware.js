@@ -13,24 +13,21 @@ const tokenExtractor = (request, response, next) => {
     next()
   }
 
-  const userExtractor = async (request, response, next) => {
-    const token = tokenExtractor(request, response, next);
-  
-    if (token) {
-      try {
+  const userExtractor = async (req, res, next) => {
+    try {
+      const token = tokenExtractor(req, res, next);
+      if (token) {
         const decodedToken = jwt.verify(token, process.env.SECRET);
-        const user = await User.findById(decodedToken.id); 
-  
-        if (user) {
-          request.user = user; 
-        }
-      } catch (error) {
-         console.error(error);
-         return response.status(401).json({ error: 'Unauthorized' });
+        const user = await User.findById(decodedToken.id);
+        req.user = user;
       }
-    }
+      next();   
   
-    next();
+    } catch (error) {
+      console.error(error);   
+  
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
   };
 
 module.exports = {

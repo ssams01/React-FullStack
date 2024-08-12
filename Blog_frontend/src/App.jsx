@@ -2,13 +2,19 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [errorMessage, setErrorMessage] = useState('some error happened...')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false);
   const [user, setUser] = useState(null)
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleLogin = async(event) => {
     event.preventDefault()
@@ -64,12 +70,16 @@ const App = () => {
       </div>
       <div>
         password
-        <input 
-        type="password"
-        value={password}
-        name = "Password"
-        onChange = {({ target }) => setPassword(target.value)}
+        <input
+          type={showPassword 
+ ? 'text' : 'password'}
+          value={password}
+          name="Password"
+          onChange={({ target }) => setPassword(target.value)}
         />
+        <button type="button" onClick={togglePasswordVisibility}>
+          {showPassword ? <FaEyeSlash /> : <FaEye />}
+        </button>
       </div>
       <button type="submit">login</button>
     </form>
