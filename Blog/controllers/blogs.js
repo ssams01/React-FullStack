@@ -2,23 +2,32 @@ const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
+const middleware = require('../utils/middleware'); 
+
+//if need be add the token extractor back here
 
 blogsRouter.get('/', async (request, response) => {
+     console.log('getting blog')
      const blogs = await Blog
      .find({}).populate('user', { username: 1, name: 1})
-     response.json(blogs)
+     console.log('getting blog 2', blogs)
+     response.json(blogs) 
 })
   
-blogsRouter.post('/', userExtractor, async (request, response) => {
+
+//running into a Unauthorized when trying to run a post request to make a blog 
+// may need to for now, take out the likes and title validation stuff and just have it create
+//the blog bar for bar like the notes but with the fields from the Blog Schema
+blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
   const { likes, title, url, ...otherData } = request.body;
 
-  // Assuming the userExtractor middleware is already used
+  
 
-  if (!request.user) { // Check if user is present on the request object
+  if (!request.user) { 
     return response.status(401).json({ error: 'Unauthorized' });
   }
 
-  const user = request.user; // Access the user from middleware
+  const user = request.user; 
 
   if (likes === undefined) {
     request.body.likes = 0;
@@ -26,11 +35,11 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
   if (title === undefined || url === undefined) {
     return response.status(400).json({ message: 'Bad request: Missing required fields "title" and/or "url".' });
   } else {
-    const blog = new Blog({ ...otherData, likes, user: user._id }); // Use user._id from request.user
+    const blog = new Blog({ ...otherData, likes, user: user._id }); 
 
     const savedBlog = await blog.save();
-    user.blogs = user.blogs.concat(savedBlog._id); // Update user's blogs array (implementation depends on your model)
-    await user.save(); // Save the updated user with the new blog ID (optional, depending on your model)
+    user.blogs = user.blogs.concat(savedBlog._id); 
+    await user.save(); 
     response.status(201).json(savedBlog);
   }
 })

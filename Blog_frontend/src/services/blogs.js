@@ -9,7 +9,13 @@ const setToken = newToken => {
 }
 
 const getAll = () => {
-  const request = axios.get(baseUrl)
+  const config = {
+    headers: {
+      'Authorization': token // JWT token should be prefixed with "Bearer "
+    }
+  };
+  
+  const request = axios.get(baseUrl, config)
   return request.then(response => response.data)
 }
 
