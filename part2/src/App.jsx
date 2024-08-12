@@ -135,7 +135,8 @@ const App = () => {
       : notes.filter(note => note.important)
 
   const loginForm = () => {
-    <form onSubmit={handleLogin}>
+    return (
+      <form onSubmit={handleLogin}>
       <div>
         username
          <input
@@ -156,16 +157,21 @@ const App = () => {
       </div>
       <button type="submit">login</button>
     </form>
+    )
+    
   }
 
   const noteForm = () => {
-    <form onSubmit={addNote}>
+    console.log('made it here');
+    return (
+      <form onSubmit={addNote}>
       <input
         value={newNote}
         onChange={handleNoteChange} 
       />
       <button type="submit">save</button>
     </form>
+    )
   }
 
   return (
@@ -191,12 +197,6 @@ const App = () => {
           <Note key={note.id} note={note} toggleImportance={() => toggleImportanceOf(note.id)} />
         )}
       </ul>
-      <form onSubmit={addNote}>
-        <input value={newNote}
-          onChange={handleNoteChange}
-        />
-        <button type="submit">save</button>
-      </form>
       <Footer />
     </div>
   )

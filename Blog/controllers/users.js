@@ -6,8 +6,9 @@ usersRouter.post('/', async (request, response) => {
     const { username, name, password } = request.body
 
     const saltRounds = 10
-    const passwordHash = await bcrypt.hash(password, saltRounds)
-
+    let salt = await bcrypt.genSalt(saltRounds)
+    const passwordHash = await bcrypt.hash(password, salt)
+    
     const user = new User({
         username,
         name,
