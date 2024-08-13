@@ -6,4 +6,14 @@ const login = async credentials => {
     return response.data
 }
 
-export default { login }
+const logout = async () => {
+    try {
+      localStorage.removeItem('token');
+  
+      window.location.href = '/login';
+    } catch (error) {
+      console.error('Error during logout:', error);
+  };
+}
+
+export default { login, logout }
