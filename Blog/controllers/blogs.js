@@ -2,9 +2,15 @@ const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
-const middleware = require('../utils/middleware'); 
 
 //if need be add the token extractor back here
+const getTokenFrom = request => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.startsWith('Bearer ')) {
+    return authorization.replace('Bearer ', '')
+  }
+  return null
+}
 
 blogsRouter.get('/', async (request, response) => {
      console.log('getting blog')
@@ -14,20 +20,30 @@ blogsRouter.get('/', async (request, response) => {
      response.json(blogs) 
 })
   
+blogsRouter.get('/:id', async (request, response, next) => {
+  const blog = await Blog.findById(request.params.id)
+  if (blog) {
+    response.json(blog)
+  }
+  else {
+    response.status(404).end()
+  }
+})
 
 //running into a Unauthorized when trying to run a post request to make a blog 
 // may need to for now, take out the likes and title validation stuff and just have it create
 //the blog bar for bar like the notes but with the fields from the Blog Schema
 blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
   const { likes, title, url, ...otherData } = request.body;
+  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
 
-  
-
-  if (!request.user) { 
-    return response.status(401).json({ error: 'Unauthorized' });
+  if(!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid '})
   }
 
-  const user = request.user; 
+  console.log(...otherData)
+
+  const user = await User.findById(decodedToken.id)
 
   if (likes === undefined) {
     request.body.likes = 0;
