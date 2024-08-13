@@ -26,7 +26,7 @@ const Notification = ({ message, isError }) => {
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [alertMessage, setAlertMessage] = useState('Hello In')
+  const [alertMessage, setAlertMessage] = useState('Hello')
   const [isError, setIsError] = useState(false)
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
@@ -130,6 +130,10 @@ const App = () => {
   };
 
   const loginForm = () => {
+
+    setAlertMessage(
+    "Welcome, please Log In"
+    )
     return (
       <form onSubmit={handleLogin}>
       <div>
@@ -198,19 +202,19 @@ const App = () => {
       <div>
       <h2>log in to application</h2>
       <Notification message={alertMessage} isError={isError}/>
-      {loginForm}
+      {loginForm()}
       </div>
       }
       {user && <div>
       <h2>blogs</h2>
-      <Notification message={alertMessage} isError={isError}/>
+   
       <p>{user.name} is logged-in</p>
       {/* <Button variant="danger" onClick={handleLogout}>
         Logout
       </Button> */}
       <button onClick={handleLogout}>logout</button>
       <h2>create new</h2>
-      {blogForm}
+      {blogForm()}
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
