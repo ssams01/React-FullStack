@@ -34,31 +34,42 @@ blogsRouter.get('/:id', async (request, response, next) => {
 // may need to for now, take out the likes and title validation stuff and just have it create
 //the blog bar for bar like the notes but with the fields from the Blog Schema
 blogsRouter.post('/', async (request, response) => {
-  const { likes, title, url, ...otherData } = request.body;
-  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  const { likes, title, url, author} = request.body;
+  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET);
 
-  if(!decodedToken.id) {
-    return response.status(401).json({ error: 'token invalid '})
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid ' });
   }
 
-  console.log(...otherData)
+  try {
+    const user = await User.findById(decodedToken.id);
+    if (!user) {
+      return response.status(400).json({ error: 'User not found' }); // Handle user not found
+    }
 
-  const user = await User.findById(decodedToken.id)
-
-  if (likes === undefined) {
-    request.body.likes = 0;
+    if (likes === undefined) {
+      request.body.likes = 0;
+    }
+    if (title === undefined || url === undefined) {
+      return response.status(400).json({ message: 'Bad request: Missing required fields "title" and/or "url".' });
+    } else {
+      const blog = new Blog({
+        title: title,
+        author: author,
+        url: url,
+        likes: likes,
+        user: user._id
+      })
+      const savedBlog = await blog.save();
+      user.blogs = user.blogs.concat(savedBlog._id); 
+      await user.save(); 
+      response.status(201).json(savedBlog);
+    }
+  } catch (error) {
+    console.error('Error saving blog:', error);
+    response.status(500).json({ error: 'Internal server error' }); // Generic error for client
   }
-  if (title === undefined || url === undefined) {
-    return response.status(400).json({ message: 'Bad request: Missing required fields "title" and/or "url".' });
-  } else {
-    const blog = new Blog({ ...otherData, likes, user: user._id }); 
-
-    const savedBlog = await blog.save();
-    user.blogs = user.blogs.concat(savedBlog._id); 
-    await user.save(); 
-    response.status(201).json(savedBlog);
-  }
-})
+});
 
 
 //may need to refactor a little later to incorporate async/await

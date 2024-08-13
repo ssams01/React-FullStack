@@ -3,7 +3,7 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import { Button } from 'react-bootstrap';
+// import { Button } from 'react-bootstrap';
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -176,9 +176,10 @@ console.log(user);
       {user && <div>
       <h2>blogs</h2>
       <p>{user.name} is logged-in</p>
-      <Button variant="danger" onClick={handleLogout}>
+      {/* <Button variant="danger" onClick={handleLogout}>
         Logout
-      </Button>
+      </Button> */}
+      <button onClick={handleLogout}>logout</button>
       <h2>create new</h2>
       {blogForm()}
       {blogs.map(blog =>
