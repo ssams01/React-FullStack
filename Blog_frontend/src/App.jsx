@@ -138,35 +138,34 @@ const App = () => {
   const blogForm = () => {
     return (
       <form onSubmit={addBlog}>
-        title
+        title:
         <input
          type="text"
          name="title"
          value={title}
          onChange={handleBlogChange} 
         />
-        author
+        <br />
+        author:
         <input
          type="text"
          name="author"
          value={author}
          onChange={handleBlogChange} 
         />
-        url
+        <br />
+        url:
         <input
          type="text"
          name="url"
          value={url}
          onChange={handleBlogChange} 
         />
+        <br />
         <button type="submit">create</button>
       </form>
     )
   }
-
-  
-
-console.log(user);
 
   return (
     <div>
