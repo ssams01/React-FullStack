@@ -7,6 +7,9 @@ import { Button } from 'react-bootstrap';
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
+  const [url, setUrl] = useState('');
   const [errorMessage, setErrorMessage] = useState('some error happened...')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -63,6 +66,44 @@ const App = () => {
     }
   }, [])
 
+  const addBlog = (event) => {
+    event.preventDefault()
+
+    console.log('post blog clicked', event.target)
+    const blogObject = {
+      title: title,
+      author: author,
+      url: url
+    }
+
+    blogService
+    .create(blogObject)
+    .then(returnedBlog => {
+      setBlogs(blogs.concat(returnedBlog))
+      setTitle('')
+      setAuthor('')
+      setUrl('')
+    })
+  }
+
+  const handleBlogChange = (event) => {
+    const { name, value } = event.target; 
+  
+    switch (name) {
+      case 'title':
+        setTitle(value);
+        break;
+      case 'author':
+        setAuthor(value);
+        break;
+      case 'url':
+        setUrl(value);
+        break;
+      default:
+        console.error('Unexpected input name:', name);
+    }
+  };
+
   const loginForm = () => {
     return (
       <form onSubmit={handleLogin}>
@@ -94,6 +135,32 @@ const App = () => {
     
   }
 
+  const blogForm = () => {
+    return (
+      <form onSubmit={addBlog}>
+        <input
+         type="text"
+         name="title"
+         value={title}
+         onChange={handleBlogChange} 
+        />
+        <input
+         type="text"
+         name="author"
+         value={author}
+         onChange={handleBlogChange} 
+        />
+        <input
+         type="text"
+         name="url"
+         value={url}
+         onChange={handleBlogChange} 
+        />
+        <button type="submit">create</button>
+      </form>
+    )
+  }
+
   
 
 console.log(user);
@@ -112,6 +179,8 @@ console.log(user);
       <Button variant="danger" onClick={handleLogout}>
         Logout
       </Button>
+      <h2>create new</h2>
+      {blogForm()}
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
