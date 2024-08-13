@@ -5,8 +5,29 @@ import loginService from './services/login'
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 // import { Button } from 'react-bootstrap';
 
+const Notification = ({ message, isError }) => {
+  if (message === null) {
+    return null
+  }
+
+  if(isError) {
+    return (
+      <div className='yoti'>
+        {message}
+      </div>
+    )
+  }
+  return (
+    <div className='noti'>
+      {message}
+    </div>
+  )
+}
+
 const App = () => {
   const [blogs, setBlogs] = useState([])
+  const [alertMessage, setAlertMessage] = useState('Hello In')
+  const [isError, setIsError] = useState(false)
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
@@ -37,6 +58,8 @@ const App = () => {
       setPassword('')
     }
     catch (exception) {
+      setAlertMessage('wrong username or password')
+      setIsError(true)
       setErrorMessage('Wrong credentials')
       setTimeout(() => {
         setErrorMessage(null)
@@ -80,6 +103,8 @@ const App = () => {
     .create(blogObject)
     .then(returnedBlog => {
       setBlogs(blogs.concat(returnedBlog))
+      setAlertMessage(`A new blog ${title} by ${author} added`)
+      setIsError(false)
       setTitle('')
       setAuthor('')
       setUrl('')
@@ -172,18 +197,20 @@ const App = () => {
       {!user &&
       <div>
       <h2>log in to application</h2>
-      {loginForm()}
+      <Notification message={alertMessage} isError={isError}/>
+      {loginForm}
       </div>
       }
       {user && <div>
       <h2>blogs</h2>
+      <Notification message={alertMessage} isError={isError}/>
       <p>{user.name} is logged-in</p>
       {/* <Button variant="danger" onClick={handleLogout}>
         Logout
       </Button> */}
       <button onClick={handleLogout}>logout</button>
       <h2>create new</h2>
-      {blogForm()}
+      {blogForm}
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
