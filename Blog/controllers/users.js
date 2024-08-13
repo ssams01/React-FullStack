@@ -24,7 +24,7 @@ usersRouter.get('/', async (request, response) => {
     const users = await User
 
     //get specific with fields later
-    .find({}).populate('blogs', { url:1, title: 1, author: 1})
+    .find({}).populate('blogs', { url: 1, title: 1, author: 1})
 
     response.json(users)
 })

@@ -33,7 +33,7 @@ blogsRouter.get('/:id', async (request, response, next) => {
 //running into a Unauthorized when trying to run a post request to make a blog 
 // may need to for now, take out the likes and title validation stuff and just have it create
 //the blog bar for bar like the notes but with the fields from the Blog Schema
-blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
+blogsRouter.post('/', async (request, response) => {
   const { likes, title, url, ...otherData } = request.body;
   const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
 
