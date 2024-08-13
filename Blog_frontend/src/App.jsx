@@ -6,23 +6,39 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 // import { Button } from 'react-bootstrap';
 
 const Notification = ({ message, isError }) => {
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      setVisible(false);
+    }, 5000);
+
+    return () => clearTimeout(timerId);
+  }, [message, isError]); // Ensure the effect runs when message or isError changes
+
   if (message === null) {
-    return null
+    return null;
   }
 
-  if(isError) {
+  if (!visible) {
+    return null;
+  }
+
+  if (isError) {
     return (
       <div className='yoti'>
         {message}
       </div>
-    )
+    );
   }
+
   return (
     <div className='noti'>
       {message}
     </div>
-  )
-}
+  );
+};
+
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
