@@ -74,14 +74,25 @@ blogsRouter.post('/', async (request, response) => {
 
 //may need to refactor a little later to incorporate async/await
 //like the other routes
-blogsRouter.put('/:id', (request, response, next) => {
+blogsRouter.put('/:id', async (request, response, next) => {
   const body = request.body
+  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET);
+
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid ' });
+  }
+
+  const user = await User.findById(decodedToken.id);
+    if (!user) {
+      return response.status(400).json({ error: 'User not found' }); // Handle user not found
+    }
 
   const blog = {
     title: body.title,
     author: body.author,
     url: body.url,
-    likes: body.likes
+    likes: body.likes,
+    user: user._id
   }
 
   Blog.findByIdAndUpdate(request.params.id, blog, { new : true})
