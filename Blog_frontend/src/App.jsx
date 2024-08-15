@@ -3,6 +3,9 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import Togglable from './components/Togglable';
+import BlogForm from './components/BlogForm';
+import { LiaKeySolid } from 'react-icons/lia';
 // import { Button } from 'react-bootstrap';
 
 const Notification = ({ message, isError }) => {
@@ -106,14 +109,6 @@ const App = () => {
   }, [])
 
   const addBlog = (event) => {
-    event.preventDefault()
-
-    console.log('post blog clicked', event.target)
-    const blogObject = {
-      title: title,
-      author: author,
-      url: url
-    }
 
     blogService
     .create(blogObject)
@@ -121,9 +116,6 @@ const App = () => {
       setBlogs(blogs.concat(returnedBlog))
       setAlertMessage(`A new blog ${title} by ${author} added`)
       setIsError(false)
-      setTitle('')
-      setAuthor('')
-      setUrl('')
     })
   }
 
@@ -181,35 +173,11 @@ const App = () => {
   }
 
   const blogForm = () => {
-    return (
-      <form onSubmit={addBlog}>
-        title:
-        <input
-         type="text"
-         name="title"
-         value={title}
-         onChange={handleBlogChange} 
-        />
-        <br />
-        author:
-        <input
-         type="text"
-         name="author"
-         value={author}
-         onChange={handleBlogChange} 
-        />
-        <br />
-        url:
-        <input
-         type="text"
-         name="url"
-         value={url}
-         onChange={handleBlogChange} 
-        />
-        <br />
-        <button type="submit">create</button>
-      </form>
-    )
+    <Togglable buttonLabel="new blog">
+      <BlogForm
+        createBlog={addBlog} 
+      />
+    </Togglable>
   }
 
   return (
