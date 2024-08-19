@@ -180,6 +180,12 @@ const App = () => {
     </Togglable>
   }
 
+  useEffect(() => {
+    const sortedBlogs = blogs.sort((a, b) => a.title.localeCompare(b.likes));
+    setBlogs(sortedBlogs);
+  }, [blogs]);
+
+
   return (
     <div>
       {!user &&

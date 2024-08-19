@@ -39,6 +39,7 @@ const Blog = ({ blog }) => {
           <button onClick={toggleDetails}>hide</button>
           <p>{blog.url}</p>
           <p>likes {blog.likes} <button onClick={handleLikes}>like</button></p>
+          <p>{blog.user.name}</p>
         </div>
       )}
       {!showDetails && (
