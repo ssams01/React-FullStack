@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 //import blogService from './services/blogs
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, handleDeleteBlog }) => {
   const [showDetails, setShowDetails] = useState(true);
   const [likes, setLikes] = useState(blog.likes)
 
@@ -47,6 +47,7 @@ const Blog = ({ blog }) => {
           <button onClick={toggleDetails}>view</button>
         </div>
       )}
+      <button onClick={() => handleDeleteBlog(blog)}>delete</button>
     </div>
   );
 };

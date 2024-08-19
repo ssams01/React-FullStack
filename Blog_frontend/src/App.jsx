@@ -180,6 +180,51 @@ const App = () => {
     </Togglable>
   }
 
+  const handleDeleteBlog = (blogToDelete) => {
+  if (window.confirm(`Delete blog "${blogToDelete.title}"?`)) {
+    try {
+      // Call your blog deletion service
+      blogService.delete(blogToDelete.id)
+        .then(() => {
+          // Update state after successful deletion
+          setBlogs(blogs.filter((blog) => blog.id !== blogToDelete.id));
+        })
+        .catch((error) => {
+          console.error('Error deleting blog:', error);
+          setIsError(true);
+          setAlertMessage('Error deleting blog. Please try again.'); // Adjust message as needed
+        });
+    } catch (error) {
+      // Handle unexpected errors
+      console.error('Unexpected error:', error);
+      setIsError(true);
+      setAlertMessage('An error occurred. Please try again later.');
+    }
+  }
+
+  const handleDeleteBlog = (blogToDelete) => {
+    if (window.confirm(`Delete blog "${blogToDelete.title}"?`)) {
+      try {
+        // Call your blog deletion service
+        blogService.delet(blogToDelete.id)
+          .then(() => {
+            // Update state after successful deletion
+            setBlogs(blogs.filter((blog) => blog.id !== blogToDelete.id));
+          })
+          .catch((error) => {
+            console.error('Error deleting blog:', error);
+            setIsError(true);
+            setAlertMessage('Error deleting blog. Please try again.'); // Adjust message as needed
+          });
+      } catch (error) {
+        // Handle unexpected errors
+        console.error('Unexpected error:', error);
+        setIsError(true);
+        setAlertMessage('An error occurred. Please try again later.');
+      }
+    }
+  }
+
   useEffect(() => {
     const sortedBlogs = blogs.sort((a, b) => a.title.localeCompare(b.likes));
     setBlogs(sortedBlogs);
@@ -206,13 +251,14 @@ const App = () => {
       <h2>create new</h2>
       {blogForm()}
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} handleDeleteBlog={handleDeleteBlog}/>
       )}
       </div>
       }
       
     </div>
   )
+}
 }
 
 export default App

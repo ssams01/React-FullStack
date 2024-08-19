@@ -37,9 +37,19 @@ const update = (id, newObject) => {
   return request.then(response => response.data)
 }
 
+const delet = (id) => {
+  const config = {
+    headers: { Authorization: token},
+  }
+
+  const response = axios.delete(`${baseUrl}/${id}`, config)
+  return response.data
+}
+
 export default { 
     getAll: getAll,
     create: create,
     update: update,
+    delet: delet,
     setToken: setToken
  }      
