@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -172,34 +172,14 @@ const App = () => {
     
   }
 
+  const blogFormRef = useRef()
+
   const blogForm = () => {
-    <Togglable buttonLabel="create new blog">
+    <Togglable buttonLabel="create new blog" ref={blogFormRef}>
       <BlogForm
         createBlog={addBlog} 
       />
     </Togglable>
-  }
-
-  const handleDeleteBlog = (blogToDelete) => {
-  if (window.confirm(`Delete blog "${blogToDelete.title}"?`)) {
-    try {
-      // Call your blog deletion service
-      blogService.delete(blogToDelete.id)
-        .then(() => {
-          // Update state after successful deletion
-          setBlogs(blogs.filter((blog) => blog.id !== blogToDelete.id));
-        })
-        .catch((error) => {
-          console.error('Error deleting blog:', error);
-          setIsError(true);
-          setAlertMessage('Error deleting blog. Please try again.'); // Adjust message as needed
-        });
-    } catch (error) {
-      // Handle unexpected errors
-      console.error('Unexpected error:', error);
-      setIsError(true);
-      setAlertMessage('An error occurred. Please try again later.');
-    }
   }
 
   const handleDeleteBlog = (blogToDelete) => {
@@ -259,6 +239,6 @@ const App = () => {
     </div>
   )
 }
-}
+
 
 export default App
