@@ -205,8 +205,9 @@ const App = () => {
     }
   }
 
+  //sorts our blogs in descending order
   useEffect(() => {
-    const sortedBlogs = blogs.sort((a, b) => a.title.localeCompare(b.likes));
+    const sortedBlogs = blogs.sort((a, b) => b.like - a.like);
     setBlogs(sortedBlogs);
   }, [blogs]);
 
